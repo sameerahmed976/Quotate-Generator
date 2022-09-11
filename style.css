@@ -54,7 +54,8 @@ img {
   align-items: start;
 }
 .quotes-container {
-  max-width: 300px;
+  /* max-width: 300px; */
+  max-width: 90vw;
   margin: 0 auto;
   margin-top: 2rem;
   word-wrap: break-word;
@@ -161,5 +162,21 @@ img {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media only screen and (min-width: 576px) {
+  .quotes-container {
+    max-width: 64vw;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .quotes-container {
+    max-width: 80vw;
+  }
+}
+@media only screen and (min-width: 992px) {
+  .quotes-container {
+    max-width: 75vw;
   }
 }
