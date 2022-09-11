@@ -2,37 +2,24 @@ import { getElement } from "./utils/getElement.js";
 import { getFetch } from "./utils/getFetch.js";
 const loading = getElement(".loading");
 const loadingTwo = getElement(".loading-2");
+const end = getElement(".end");
 
 const quotesContainer = getElement(".quotes-container");
-let page = 12;
+let page = 1;
 let limit = 10;
+let url = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`;
 
-// getFetch()
-
-const getData = async () => {
+const displayQuotes = async () => {
   loading.classList.add("show-loading");
-  let url = `https://api.javascripttutorial.net/v1/quotes/?page=${page}&limit=${limit}`;
 
   const { data } = await getFetch(url);
+  // console.log('data',"displayQuotes");
 
-  // console.log("🚀 ~ file: script.js ~ line 15 ~ getData ~ data", data);
+  displayArticle(data);
   loading.classList.remove("show-loading");
-  displayCardQuote(data);
 };
 
-const displayCardQuote = (data) => {
-  if (!Array.isArray(data)) {
-    if (page > 12) {
-      loadingTwo.classList.remove("show-loading-2");
-
-      const ele = document.createElement("p");
-      ele.className = "end";
-      ele.textContent = "the end";
-      quotesContainer.appendChild(ele);
-      return;
-    }
-  }
-
+const displayArticle = (data) => {
   const htmlData = data
     .map(({ quote, author }) => {
       return `<article class="quote">
@@ -58,57 +45,32 @@ const displayCardQuote = (data) => {
   quotesContainer.insertAdjacentHTML("beforeend", htmlData);
 };
 
-const getDisplayData = () => {
+const changePage = () => {
   const timer = setTimeout(() => {
     page++;
-    getData();
-  }, 1000);
+    displayQuotes();
+  }, 500);
 
   if (page > 12) {
     loadingTwo.classList.remove("show-loading-2");
-
     clearTimeout(timer);
-    return;
+    end.classList.add("show-end");
+    console.log("clearTimeout");
   }
 };
 
-// getData();
-
-const getDisplayMore = async () => {
-  // console.log(
-  //   "🚀 ~ file: script.js ~ line 46 ~ getDisplayMore ~ window.innerHeight",
-  //   window.innerHeight
-  // );
-  // console.log(
-  //   "🚀 ~ file: script.js ~ line 46 ~ getDisplayMore ~  window.scrollY",
-  //   window.scrollY
-  // );
-  // console.log("data");
-  // if (
-  //   window.scrollY + window.innerHeight >
-  //   document.documentElement.scrollHeight
-  // console.log(
-  //   "🚀 ~ file: script.js ~ line 56 ~ getDisplayMore ~ document.documentElement.scrollHeight",
-  //   document.documentElement.scrollHeight
-  // );
-  // ) {
-  //   console.log("data");
-  //   // displayCardQuote(data);
-  // }
-
+const getDisplayMore = () => {
   const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
 
-  if (clientHeight + scrollTop >= scrollHeight && page < 13) {
+  if (clientHeight + scrollTop >= scrollHeight) {
     loadingTwo.classList.add("show-loading-2");
-    getDisplayData();
-    // console.log("data");
+    console.log("getDisplayMore");
+    changePage();
   }
-  // loading.classList.remove("show-loading");
 };
-
-// window.addEventListener("load", getData);
-getData();
 
 window.addEventListener("scroll", getDisplayMore, {
   passive: true,
 });
+
+window.addEventListener("DOMContentLoaded", displayQuotes);
